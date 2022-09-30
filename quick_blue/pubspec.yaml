@@ -8,13 +8,23 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
   flutter: ">=2.2.0"
 
+publish_to: none
+
+dependency_overrides:
+  quick_blue_platform_interface:
+    path: ../quick_blue_platform_interface
+
 dependencies:
   flutter:
     sdk: flutter
-  quick_blue_platform_interface: ^0.4.0-dev.0
+  # quick_blue_platform_interface: ^0.4.0-dev.0
+  quick_blue_platform_interface:
+    path: ../quick_blue_platform_interface
   quick_blue_macos: ^0.4.0-dev.0
-  quick_blue_windows: ^0.4.0-dev.0
-  quick_blue_linux: ^0.2.0-dev.0
+  # quick_blue_windows: ^0.4.0-dev.0
+  quick_blue_windows: 
+    path: ../quick_blue_windows
+  # quick_blue_linux: ^0.2.0-dev.0
   convert: ^3.0.0
 
 dev_dependencies:

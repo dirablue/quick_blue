@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:quick_blue_linux/quick_blue_linux.dart';
+// import 'package:quick_blue_linux/quick_blue_linux.dart';
 import 'package:quick_blue_platform_interface/method_channel_quick_blue.dart';
 import 'package:quick_blue_platform_interface/quick_blue_platform_interface.dart';
 
@@ -26,9 +26,10 @@ QuickBluePlatform get _instance {
         Platform.isWindows ||
         Platform.isMacOS) {
       QuickBluePlatform.instance = MethodChannelQuickBlue();
-    } else if (Platform.isLinux) {
-      QuickBluePlatform.instance = QuickBlueLinux();
     }
+    //  else if (Platform.isLinux) {
+    //   QuickBluePlatform.instance = QuickBlueLinux();
+    // }
     _manualDartRegistrationNeeded = false;
   }
 
@@ -78,6 +79,10 @@ class QuickBlue {
 
   static void setValueHandler(OnValueChanged? onValueChanged) {
     _platform.onValueChanged = onValueChanged;
+  }
+
+  static void setOnWriteHandler(OnWriteDone? onWriteDone) {
+    _platform.onWriteDone = onWriteDone;
   }
 
   static Future<void> readValue(String deviceId, String service, String characteristic) {

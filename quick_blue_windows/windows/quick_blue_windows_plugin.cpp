@@ -495,8 +495,21 @@ winrt::fire_and_forget QuickBlueWindowsPlugin::ReadValueAsync(BluetoothDeviceAge
 winrt::fire_and_forget QuickBlueWindowsPlugin::WriteValueAsync(BluetoothDeviceAgent& bluetoothDeviceAgent, std::string service, std::string characteristic, std::vector<uint8_t> value, std::string bleOutputProperty) {
   auto gattCharacteristic = co_await bluetoothDeviceAgent.GetCharacteristicAsync(service, characteristic);
   auto writeOption = bleOutputProperty.compare("withoutResponse") == 0 ? GattWriteOption::WriteWithoutResponse : GattWriteOption::WriteWithResponse;
-  auto writeValueStatus = co_await gattCharacteristic.WriteValueAsync(from_bytevc(value), writeOption);
-  OutputDebugString((L"WriteValueAsync " + winrt::to_hstring(characteristic) + L", " + winrt::to_hstring(to_hexstring(value)) + L", " + winrt::to_hstring((int32_t)writeValueStatus) + L"\n").c_str());
+  
+  // NOTE: update the logic for avoiding illegal exception with withResponse and get a result status.
+  // co_await gattCharacteristic.WriteValueAsync(from_bytevc(value), writeOption);
+  auto writeResult = co_await gattCharacteristic.WriteValueWithResultAsync(from_bytevc(value), writeOption);
+  int resultStatus = (int)writeResult.Status();
+
+  OutputDebugString((L"WriteValueAsync " + winrt::to_hstring(characteristic) + L", " + winrt::to_hstring(to_hexstring(value)) + L", " + winrt::to_hstring(resultStatus) + L"\n").c_str());
+
+  message_connector_->Send(EncodableMap{
+    {"deviceId", std::to_string(gattCharacteristic.Service().Device().BluetoothAddress())},
+    {"writeDone", EncodableMap{
+      {"characteristic", characteristic},
+      {"status", resultStatus},
+    }},
+  });
 }
 
 void QuickBlueWindowsPlugin::GattCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args) {

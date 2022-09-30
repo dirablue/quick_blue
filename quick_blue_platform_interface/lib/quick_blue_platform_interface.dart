@@ -19,6 +19,9 @@ typedef OnServiceDiscovered = void Function(String deviceId, String serviceId, L
 
 typedef OnValueChanged = void Function(String deviceId, String characteristicId, Uint8List value);
 
+typedef OnWriteDone = void Function(
+    String deviceId, String characteristicId, int status);
+
 abstract class QuickBluePlatform extends PlatformInterface {
   QuickBluePlatform() : super(token: _token);
 
@@ -48,6 +51,8 @@ abstract class QuickBluePlatform extends PlatformInterface {
   void disconnect(String deviceId);
 
   OnConnectionChanged? onConnectionChanged;
+
+  OnWriteDone? onWriteDone;
 
   void discoverServices(String deviceId);
 
